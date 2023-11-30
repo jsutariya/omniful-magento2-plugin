@@ -246,7 +246,8 @@ class Order implements OrderInterface
                         "subtotal" => (float)$item->getRowTotal(),
                         "total" => (float)$item->getRowTotalInclTax(),
                         "tax" => (float)$item->getTaxAmount(),
-                    ];
+                        "raw_data" => $item->getData(),
+                        ];
                 }
             }
 
@@ -335,7 +336,7 @@ class Order implements OrderInterface
                 ],
             ];
 
-            $allowedExtensionAttributes = ["order_custom_attributes"];
+            $allowedExtensionAttributes = ["order_custom_attributes", "fooman_total_group"];
             $data = $this->getOrderJsonData($order->getId());
             $serializedArray = $this->json->serialize((array)$data->getExtensionAttributes());
             $unserializedArray = $this->json->unserialize($serializedArray);
@@ -391,7 +392,7 @@ class Order implements OrderInterface
                 "cancel_reason" => $this->getCancelReason($order),
                 "totals" => $totals,
                 "shipments" => $shipmentTracking,
-                'extension_attributes' => $allowedAttributes
+                'extension_attributes' => $allowedAttributes,
             ];
         } catch (NoSuchEntityException $e) {
             return $this->helper->getResponseStatus(
